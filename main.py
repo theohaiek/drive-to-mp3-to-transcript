@@ -4,6 +4,8 @@ import tempfile
 from pathlib import Path
 import shutil
 
+import transcricao
+
 
 def instalar_pacote(pacote):
     """Instala um pacote via pip."""
@@ -83,6 +85,26 @@ def perguntar_nome_final():
     nome = limpar_nome(input("> ").strip())
 
     return nome or NOME_PADRAO
+
+
+def perguntar_transcricao():
+    print("\nTranscrever o áudio final para texto?")
+    print("  [s] Sim - gera um .txt ao lado do MP3")
+    print("  [n] Não")
+    print(f"\n  Usa o Whisper {transcricao.MODEL_SIZE} localmente.")
+    print("  Na primeira vez baixa o modelo (~3 GB).")
+    print()
+
+    while True:
+        escolha = input("> ").strip().lower()
+
+        if escolha in ("s", "sim", "y", "yes"):
+            return True
+
+        if escolha in ("n", "nao", "não", "no", ""):
+            return False
+
+        print("Digite s ou n.")
 
 
 def caminho_livre(pasta, nome):
@@ -223,7 +245,7 @@ def baixar_separados(links):
     print("Todos os downloads finalizaram.")
 
 
-def baixar_unico(links, nome_final):
+def baixar_unico(links, nome_final, transcrever):
     pasta_temp = Path(tempfile.mkdtemp(prefix="drive_mp3_"))
 
     try:
@@ -255,10 +277,23 @@ def baixar_unico(links, nome_final):
     finally:
         shutil.rmtree(pasta_temp, ignore_errors=True)
 
+    if transcrever:
+        print("\nTranscrevendo...")
+        texto = transcricao.transcrever(destino)
+
+        if texto is not None:
+            print(f"Transcrição: {texto.name}")
+
 
 def main():
     modo = escolher_modo()
-    nome_final = perguntar_nome_final() if modo == "2" else None
+
+    nome_final = None
+    transcrever = False
+
+    if modo == "2":
+        nome_final = perguntar_nome_final()
+        transcrever = perguntar_transcricao()
 
     print()
     links = coletar_links()
@@ -272,7 +307,7 @@ def main():
     if modo == "1":
         baixar_separados(links)
     else:
-        baixar_unico(links, nome_final)
+        baixar_unico(links, nome_final, transcrever)
 
 
 if __name__ == "__main__":
