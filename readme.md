@@ -4,6 +4,7 @@ Script em Python para baixar automaticamente o áudio de arquivos compartilhados
 
 ## Funcionalidades
 
+- Pergunta no início se os áudios devem ficar separados ou unidos em um único MP3.
 - Recebe múltiplos links do Google Drive via terminal.
 - Finaliza a entrada quando uma linha vazia é enviada.
 - Baixa apenas o áudio de cada arquivo.
@@ -23,8 +24,17 @@ Nenhuma instalação manual de bibliotecas é necessária.
 Execute o script:
 
 ```bash
-python baixar_drive_mp3.py
+python main.py
 ```
+
+Escolha como salvar:
+
+```text
+  [1] Separados  - um MP3 por link
+  [2] Único      - todos juntos em um só MP3
+```
+
+Na opção **2** é possível informar o nome do arquivo final (ENTER usa `audio_completo`).
 
 Cole um link por linha:
 
@@ -38,6 +48,8 @@ Quando terminar, pressione **Enter** em uma linha vazia para iniciar os download
 ## Saída
 
 Os arquivos MP3 serão salvos na mesma pasta do script.
+
+No modo único, os áudios são baixados em uma pasta temporária, unidos na ordem em que os links foram colados e salvos como um só MP3. Se já existir um arquivo com o mesmo nome, um sufixo numérico é adicionado.
 
 ## Observações
 
