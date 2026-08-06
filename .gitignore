@@ -16,3 +16,9 @@ __pycache__/
 
 *.txt
 results/
+
+.env
+.env.*
+*.pem
+*.key
+credentials.json
